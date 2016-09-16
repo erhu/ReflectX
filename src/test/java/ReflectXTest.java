@@ -20,4 +20,23 @@ public class ReflectXTest {
                 .invoke(1);
         Assert.assertEquals("public 1", obj);
     }
+
+    @Test
+    public void testInvokePrivateMethod() {
+        Object obj = new ReflectX().on("cn.erhu.reflectx.DemoClass")
+                .instance()
+                .method("privateMethod", int.class)
+                .invoke(1);
+        Assert.assertEquals("private 1", obj);
+    }
+
+    @Test
+    public void testInvokeStaticMethod() {
+        Object obj = new ReflectX().on("cn.erhu.reflectx.DemoClass")
+                .method("publicStaticMethod", int.class)
+                .invoke(1);
+        Assert.assertEquals("public static 1", obj);
+    }
+
+
 }
