@@ -16,15 +16,15 @@ public class OriginReflect {
         DemoClass obj = new DemoClass();
         Class cls = obj.getClass();
 
-        //printClass(cls);
+        printClass(cls);
         printMethods(cls);
         println("----------");
         printDeclaredMethods(cls);
-        //printMetaData(cls);
-        //printAnnotationMethod(cls);
-        //newInstanceFromClass(cls);
-        //invokeMethod(cls);
-        //invokeStaticMethod(cls);
+        printMetaData(cls);
+        printAnnotationMethod(cls);
+        newInstanceFromClass(cls);
+        invokeMethod(cls);
+        invokeStaticMethod(cls);
     }
 
     public static void printMethods(Class cls) {
@@ -39,7 +39,7 @@ public class OriginReflect {
         }
     }
 
-    public static void invokeMethod(Class cls) {
+    public static void invokeMethod(Class<?> cls) {
         try {
             Object obj = cls.newInstance();
             if (obj != null) {
@@ -51,7 +51,7 @@ public class OriginReflect {
         }
     }
 
-    public static void invokeStaticMethod(Class cls) {
+    public static void invokeStaticMethod(Class<?> cls) {
         try {
             Method method = cls.getMethod("publicStaticMethod", int.class);
             println(method.invoke(null, 3));

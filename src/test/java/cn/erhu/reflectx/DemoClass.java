@@ -12,8 +12,15 @@ public class DemoClass {
     public static String publicStaticStr;
     public String publicStr;
 
-    private static String privateStaticStr;
     private String privateStr;
+    private static String privateStaticStr;
+
+    public DemoClass() {
+        privateStr = "privateStr";
+        privateStaticStr = "privateStaticStr";
+        publicStr = "publicStr";
+        publicStaticStr = "publicStaticStr";
+    }
 
     public String publicMethod(int i) {
         return String.format("public %d", i);

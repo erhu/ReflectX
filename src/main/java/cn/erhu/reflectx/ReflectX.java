@@ -1,5 +1,6 @@
 package cn.erhu.reflectx;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -13,7 +14,7 @@ import java.lang.reflect.Modifier;
  */
 public class ReflectX {
 
-    private Class clazz;
+    private Class<?> clazz;
     private Method method;
     private Object instance;
 
@@ -41,6 +42,29 @@ public class ReflectX {
         }
         return this;
     }
+
+    public Object field(String name) {
+        try {
+            Field field = clazz.getDeclaredField(name);
+            field.setAccessible(true);
+
+            // not static field
+            if ((field.getModifiers() & Modifier.STATIC) == 0) {
+                if (instance == null) {
+                    throw new NullPointerException("instance is null when call non-static field");
+                }
+            }
+
+            return field.get(instance);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 
     public ReflectX method(String name, Class<?>... parameterTypes) {
         try {
