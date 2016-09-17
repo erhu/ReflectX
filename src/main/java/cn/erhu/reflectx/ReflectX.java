@@ -15,7 +15,12 @@ import java.lang.reflect.Modifier;
 public class ReflectX {
 
     private Class<?> clazz;
-    private Object instance;
+    private Object object;
+
+    public ReflectX on(Class clsName) {
+        clazz = clsName;
+        return this;
+    }
 
     public ReflectX on(String claName) {
         try {
@@ -26,14 +31,24 @@ public class ReflectX {
         return this;
     }
 
-    public ReflectX on(Class clsName) {
-        clazz = clsName;
+    public ReflectX on(String claName, ClassLoader loader) {
+        try {
+            clazz = Class.forName(claName, true, loader);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public ReflectX on(Object object) {
+        this.object = object;
+        this.clazz = object.getClass();
         return this;
     }
 
     public ReflectX create() {
         try {
-            instance = clazz.newInstance();
+            object = clazz.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -44,7 +59,7 @@ public class ReflectX {
 
     public ReflectX create(Object... p) {
         try {
-            instance = clazz.getConstructor(types(p)).newInstance(p);
+            object = clazz.getConstructor(types(p)).newInstance(p);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -64,12 +79,12 @@ public class ReflectX {
 
             // not static field
             if ((field.getModifiers() & Modifier.STATIC) == 0) {
-                if (instance == null) {
+                if (object == null) {
                     throw new NullPointerException("create is null when call non-static field");
                 }
             }
 
-            return field.get(instance);
+            return field.get(object);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -103,7 +118,7 @@ public class ReflectX {
 
         if (method != null) {
             method.setAccessible(true);
-            return invoke(instance, method, objs);
+            return invoke(object, method, objs);
         }
 
         return null;
