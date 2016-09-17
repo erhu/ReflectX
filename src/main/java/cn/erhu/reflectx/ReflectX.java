@@ -15,7 +15,6 @@ import java.lang.reflect.Modifier;
 public class ReflectX {
 
     private Class<?> clazz;
-    private Method method;
     private Object instance;
 
     public ReflectX on(String claName) {
@@ -45,12 +44,7 @@ public class ReflectX {
 
     public ReflectX create(Object... p) {
         try {
-            Class<?>[] classes = new Class[p.length];
-            int i = 0;
-            for (Object o : p) {
-                classes[i++] = o.getClass();
-            }
-            instance = clazz.getConstructor(classes).newInstance(p);
+            instance = clazz.getConstructor(types(p)).newInstance(p);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -85,22 +79,41 @@ public class ReflectX {
         return null;
     }
 
+    public Object call(String name, Object... objs) {
+        Method method = null;
+        Class<?>[] pTypes = types(objs);
 
-    public ReflectX method(String name, Class<?>... parameterTypes) {
         try {
-            method = clazz.getDeclaredMethod(name, parameterTypes);
-            method.setAccessible(true);
+            method = clazz.getDeclaredMethod(name, pTypes);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            boolean found = false;
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method m : methods) {
+                if (m.getName().equals(name)
+                        && match(m.getParameterTypes(), pTypes)) {
+                    method = m;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                e.printStackTrace();
+            }
         }
-        return this;
+
+        if (method != null) {
+            method.setAccessible(true);
+            return invoke(instance, method, objs);
+        }
+
+        return null;
     }
 
-    public Object invoke(Object... parameters) {
-        // not static method
+    private Object invoke(Object instance, Method method, Object... parameters) {
+        // not static call
         if ((method.getModifiers() & Modifier.STATIC) == 0) {
             if (instance == null) {
-                throw new NullPointerException("create is null when call non-static method");
+                throw new NullPointerException("create is null when call non-static call");
             }
         }
 
@@ -112,5 +125,48 @@ public class ReflectX {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Class<?>[] types(Object... obj) {
+        Class<?>[] types = new Class[obj.length];
+        for (int i = 0; i < obj.length; i++) {
+            types[i] = obj[i].getClass();
+        }
+        return types;
+    }
+
+    private boolean match(Class<?>[] p1, Class<?>[] p2) {
+        int i = 0;
+        for (Class<?> c1 : p1) {
+            if (!wrapper(c1).isAssignableFrom(wrapper(p2[i]))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Class<?> wrapper(Class<?> c) {
+        if (c.isPrimitive()) {
+            if (c == int.class) {
+                return Integer.class;
+            } else if (c == short.class) {
+                return Short.class;
+            } else if (c == byte.class) {
+                return Byte.class;
+            } else if (c == long.class) {
+                return Long.class;
+            } else if (c == float.class) {
+                return Float.class;
+            } else if (c == double.class) {
+                return Double.class;
+            } else if (c == char.class) {
+                return Character.class;
+            } else if (c == boolean.class) {
+                return Boolean.class;
+            } else if (c == Void.class) {
+                return Void.class;
+            }
+        }
+        return c;
     }
 }

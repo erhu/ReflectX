@@ -28,8 +28,7 @@ public class ReflectXTest {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
                 .create()
-                .method("publicMethod", int.class)
-                .invoke(1);
+                .call("publicMethod", 1);
         assertEquals("public 1", obj);
     }
 
@@ -38,8 +37,7 @@ public class ReflectXTest {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
                 .create()
-                .method("privateMethod", int.class)
-                .invoke(1);
+                .call("privateMethod", 1);
         assertEquals("private 1", obj);
     }
 
@@ -47,8 +45,7 @@ public class ReflectXTest {
     public void testInvokeStaticMethod() {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
-                .method("publicStaticMethod", int.class)
-                .invoke(1);
+                .call("publicStaticMethod", 1);
         assertEquals("public static 1", obj);
     }
 
