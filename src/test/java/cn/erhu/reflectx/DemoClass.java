@@ -22,6 +22,11 @@ public class DemoClass {
         publicStaticStr = "publicStaticStr";
     }
 
+    public DemoClass(String privateStr) {
+        this();
+        this.privateStr = privateStr;
+    }
+
     public String publicMethod(int i) {
         return String.format("public %d", i);
     }

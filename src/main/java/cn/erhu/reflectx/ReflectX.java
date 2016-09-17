@@ -32,12 +32,32 @@ public class ReflectX {
         return this;
     }
 
-    public ReflectX instance() {
+    public ReflectX create() {
         try {
             instance = clazz.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public ReflectX create(Object... p) {
+        try {
+            Class<?>[] classes = new Class[p.length];
+            int i = 0;
+            for (Object o : p) {
+                classes[i++] = o.getClass();
+            }
+            instance = clazz.getConstructor(classes).newInstance(p);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
         return this;
@@ -51,7 +71,7 @@ public class ReflectX {
             // not static field
             if ((field.getModifiers() & Modifier.STATIC) == 0) {
                 if (instance == null) {
-                    throw new NullPointerException("instance is null when call non-static field");
+                    throw new NullPointerException("create is null when call non-static field");
                 }
             }
 
@@ -80,7 +100,7 @@ public class ReflectX {
         // not static method
         if ((method.getModifiers() & Modifier.STATIC) == 0) {
             if (instance == null) {
-                throw new NullPointerException("instance is null when call non-static method");
+                throw new NullPointerException("create is null when call non-static method");
             }
         }
 

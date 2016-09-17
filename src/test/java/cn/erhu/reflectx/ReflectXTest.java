@@ -1,6 +1,7 @@
 package cn.erhu.reflectx;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 
@@ -14,23 +15,32 @@ import org.junit.Test;
 public class ReflectXTest {
 
     @Test
+    public void testCreate() {
+        Object obj = new ReflectX()
+                .on("cn.erhu.reflectx.DemoClass")
+                .create("hello")
+                .field("privateStr");
+        assertEquals(obj, "hello");
+    }
+
+    @Test
     public void testInvokeMethod() {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
-                .instance()
+                .create()
                 .method("publicMethod", int.class)
                 .invoke(1);
-        Assert.assertEquals("public 1", obj);
+        assertEquals("public 1", obj);
     }
 
     @Test
     public void testInvokePrivateMethod() {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
-                .instance()
+                .create()
                 .method("privateMethod", int.class)
                 .invoke(1);
-        Assert.assertEquals("private 1", obj);
+        assertEquals("private 1", obj);
     }
 
     @Test
@@ -39,7 +49,7 @@ public class ReflectXTest {
                 .on("cn.erhu.reflectx.DemoClass")
                 .method("publicStaticMethod", int.class)
                 .invoke(1);
-        Assert.assertEquals("public static 1", obj);
+        assertEquals("public static 1", obj);
     }
 
 
@@ -47,18 +57,18 @@ public class ReflectXTest {
     public void testGetPrivateField() {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
-                .instance()
+                .create()
                 .field("privateStr");
-        Assert.assertEquals(obj, "privateStr");
+        assertEquals(obj, "privateStr");
     }
 
     @Test
     public void testGetPublicField() {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
-                .instance()
+                .create()
                 .field("publicStr");
-        Assert.assertEquals(obj, "publicStr");
+        assertEquals(obj, "publicStr");
     }
 
     @Test
@@ -66,7 +76,7 @@ public class ReflectXTest {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
                 .field("privateStaticStr");
-        Assert.assertEquals(obj, "privateStaticStr");
+        assertEquals(obj, "privateStaticStr");
     }
 
     @Test
@@ -74,7 +84,7 @@ public class ReflectXTest {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
                 .field("publicStaticStr");
-        Assert.assertEquals(obj, "publicStaticStr");
+        assertEquals(obj, "publicStaticStr");
     }
 
 }
