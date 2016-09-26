@@ -14,27 +14,30 @@ public class TestOn {
 
     @Test
     public void on1() {
+        // on object
         Object obj = new ReflectX()
                 .on(new DemoClass("hi"))
-                .field("privateStr");
+                .field("privateStr").get();
         Assert.assertEquals(obj, "hi");
     }
 
     @Test
     public void on2() {
+        // on className
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.DemoClass")
                 .create("hi")
-                .field("privateStr");
+                .field("privateStr").get();
         Assert.assertEquals(obj, "hi");
     }
 
     @Test
     public void on3() {
+        // on .class
         Object obj = new ReflectX()
                 .on(DemoClass.class)
                 .create("hi")
-                .field("privateStr");
+                .field("privateStr").get();
         Assert.assertEquals(obj, "hi");
     }
 

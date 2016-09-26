@@ -15,25 +15,28 @@ import java.lang.reflect.Modifier;
 public class ReflectX {
 
     private Class<?> clazz;
-    private Object object;
+    private Object instance;
 
+    /*------------------*/
+    /*------- on -------*/
+    /*------------------*/
     public ReflectX on(Class clsName) {
         clazz = clsName;
         return this;
     }
 
-    public ReflectX on(String claName) {
+    public ReflectX on(String clsName) {
         try {
-            clazz = Class.forName(claName);
+            clazz = Class.forName(clsName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return this;
     }
 
-    public ReflectX on(String claName, ClassLoader loader) {
+    public ReflectX on(String clsName, ClassLoader loader) {
         try {
-            clazz = Class.forName(claName, true, loader);
+            clazz = Class.forName(clsName, true, loader);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -41,14 +44,17 @@ public class ReflectX {
     }
 
     public ReflectX on(Object object) {
-        this.object = object;
+        this.instance = object;
         this.clazz = object.getClass();
         return this;
     }
 
+    /*------------------*/
+    /*----- create -----*/
+    /*------------------*/
     public ReflectX create() {
         try {
-            object = clazz.newInstance();
+            instance = clazz.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -59,7 +65,7 @@ public class ReflectX {
 
     public ReflectX create(Object... p) {
         try {
-            object = clazz.getConstructor(types(p)).newInstance(p);
+            instance = clazz.getConstructor(types(p)).newInstance(p);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -72,29 +78,36 @@ public class ReflectX {
         return this;
     }
 
-    public Object field(String name) {
+
+    /*------------------*/
+    /*------ field -----*/
+    /*------------------*/
+    public ReflectX field(String name) {
         try {
             Field field = clazz.getDeclaredField(name);
             field.setAccessible(true);
 
             // not static field
             if ((field.getModifiers() & Modifier.STATIC) == 0) {
-                if (object == null) {
+                if (instance == null) {
                     throw new NullPointerException("create is null when call non-static field");
                 }
             }
 
-            return field.get(object);
+            on(field.get(instance));
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return this;
     }
 
-    public Object call(String name, Object... objs) {
+    /*------------------*/
+    /*------ call ------*/
+    /*------------------*/
+    public ReflectX call(String name, Object... objs) {
         Method method = null;
         Class<?>[] pTypes = types(objs);
 
@@ -118,12 +131,23 @@ public class ReflectX {
 
         if (method != null) {
             method.setAccessible(true);
-            return invoke(object, method, objs);
+
+            on(invoke(instance, method, objs));
         }
 
-        return null;
+        return this;
     }
 
+    /*------------------*/
+    /*----- get --------*/
+    /*------------------*/
+    public Object get() {
+        return instance;
+    }
+
+    /*------------------*/
+    /*---- private -----*/
+    /*------------------*/
     private Object invoke(Object instance, Method method, Object... parameters) {
         // not static call
         if ((method.getModifiers() & Modifier.STATIC) == 0) {
