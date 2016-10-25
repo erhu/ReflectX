@@ -44,8 +44,10 @@ public class ReflectX {
     }
 
     public ReflectX on(Object object) {
-        this.instance = object;
-        this.clazz = object.getClass();
+        if (object != null) {
+            this.instance = object;
+            this.clazz = object.getClass();
+        }
         return this;
     }
 
@@ -125,7 +127,23 @@ public class ReflectX {
                 }
             }
             if (!found) {
-                e.printStackTrace();
+                try {
+                    method = clazz.getMethod(name, pTypes);
+                } catch (NoSuchMethodException e1) {
+                    found = false;
+                    methods = clazz.getMethods();
+                    for (Method m : methods) {
+                        if (m.getName().equals(name)
+                                && match(m.getParameterTypes(), pTypes)) {
+                            method = m;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        e1.printStackTrace();
+                    }
+                }
             }
         }
 
