@@ -1,4 +1,4 @@
-package cn.erhu.reflectx;
+package cn.erhu.reflectx.democlass;
 
 /**
  * DemoClass

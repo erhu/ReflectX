@@ -1,5 +1,6 @@
 package cn.erhu.reflectx;
 
+import cn.erhu.reflectx.democlass.DemoClass;
 import org.junit.Assert;
 import org.junit.Test;
 

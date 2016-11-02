@@ -1,5 +1,6 @@
 package cn.erhu.reflectx;
 
+import cn.erhu.reflectx.democlass.DemoClass;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,20 +13,24 @@ import org.junit.Test;
  */
 public class TestOn {
 
+    /**
+     * on object
+     */
     @Test
     public void on1() {
-        // on object
-        Object obj = new ReflectX()
+        Object obj = ReflectX
                 .on(new DemoClass("hi"))
                 .field("privateStr").get();
         Assert.assertEquals(obj, "hi");
     }
 
+    /**
+     * on className
+     */
     @Test
     public void on2() {
-        // on className
-        Object obj = new ReflectX()
-                .on("cn.erhu.reflectx.DemoClass")
+        Object obj = ReflectX
+                .on("cn.erhu.reflectx.democlass.DemoClass")
                 .create("hi")
                 .field("privateStr").get();
         Assert.assertEquals(obj, "hi");
@@ -34,7 +39,7 @@ public class TestOn {
     @Test
     public void on3() {
         // on .class
-        Object obj = new ReflectX()
+        Object obj = ReflectX
                 .on(DemoClass.class)
                 .create("hi")
                 .field("privateStr").get();

@@ -20,35 +20,39 @@ public class ReflectX {
     /*------------------*/
     /*------- on -------*/
     /*------------------*/
-    public ReflectX on(Class clsName) {
-        clazz = clsName;
-        return this;
+    public static ReflectX on(Class clsName) {
+        ReflectX x = new ReflectX();
+        x.clazz = clsName;
+        return x;
     }
 
-    public ReflectX on(String clsName) {
+    public static ReflectX on(String clsName) {
+        ReflectX x = new ReflectX();
         try {
-            clazz = Class.forName(clsName);
+            x.clazz = Class.forName(clsName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return this;
+        return x;
     }
 
-    public ReflectX on(String clsName, ClassLoader loader) {
+    public static ReflectX on(String clsName, ClassLoader loader) {
+        ReflectX x = new ReflectX();
         try {
-            clazz = Class.forName(clsName, true, loader);
+            x.clazz = Class.forName(clsName, true, loader);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return this;
+        return x;
     }
 
-    public ReflectX on(Object object) {
+    public static ReflectX on(Object object) {
+        ReflectX x = new ReflectX();
         if (object != null) {
-            this.instance = object;
-            this.clazz = object.getClass();
+            x.instance = object;
+            x.clazz = object.getClass();
         }
-        return this;
+        return x;
     }
 
     /*------------------*/
@@ -84,7 +88,7 @@ public class ReflectX {
     /*------------------*/
     /*------ field -----*/
     /*------------------*/
-    public ReflectX field(String name) {
+    public ReflectX field(String name) throws ReflectXException {
         try {
             Field field = clazz.getDeclaredField(name);
             field.setAccessible(true);
@@ -96,14 +100,12 @@ public class ReflectX {
                 }
             }
 
-            on(field.get(instance));
+            return on(field.get(instance));
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            throw new ReflectXException(e);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new ReflectXException(e);
         }
-
-        return this;
     }
 
     /*------------------*/

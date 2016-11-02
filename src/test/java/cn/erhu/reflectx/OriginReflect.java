@@ -3,6 +3,8 @@ package cn.erhu.reflectx;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import cn.erhu.reflectx.democlass.DemoClass;
+
 /**
  * OriginReflect
  *
