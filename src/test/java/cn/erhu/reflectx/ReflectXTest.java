@@ -24,33 +24,6 @@ public class ReflectXTest {
     }
 
     @Test
-    public void testInvokeMethod() {
-        Object obj = new ReflectX()
-                .on("cn.erhu.reflectx.democlass.DemoClass")
-                .create()
-                .call("publicMethod", 1).get();
-        assertEquals("public 1", obj);
-    }
-
-    @Test
-    public void testInvokePrivateMethod() {
-        Object obj = new ReflectX()
-                .on("cn.erhu.reflectx.democlass.DemoClass")
-                .create()
-                .call("privateMethod", 1).get();
-        assertEquals("private 1", obj);
-    }
-
-    @Test
-    public void testInvokeStaticMethod() {
-        Object obj = new ReflectX()
-                .on("cn.erhu.reflectx.democlass.DemoClass")
-                .call("publicStaticMethod", 1).get();
-        assertEquals("public static 1", obj);
-    }
-
-
-    @Test
     public void testGetPrivateField() {
         Object obj = new ReflectX()
                 .on("cn.erhu.reflectx.democlass.DemoClass")

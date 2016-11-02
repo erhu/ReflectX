@@ -152,10 +152,11 @@ public class ReflectX {
         if (method != null) {
             method.setAccessible(true);
 
-            on(invoke(instance, method, objs));
+            return on(invoke(instance, method, objs));
         }
 
-        return this;
+        throw new ReflectXException(
+                new NoSuchMethodException(String.format("%s(%s) not found", name, objs)));
     }
 
     /*------------------*/
@@ -179,11 +180,10 @@ public class ReflectX {
         try {
             return method.invoke(instance, parameters);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new ReflectXException(e);
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            throw new ReflectXException(e);
         }
-        return null;
     }
 
     private Class<?>[] types(Object... obj) {
