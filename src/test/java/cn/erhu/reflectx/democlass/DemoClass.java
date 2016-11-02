@@ -7,7 +7,7 @@ package cn.erhu.reflectx.democlass;
  * @version 1.0
  * @since 9/16/16 9:58 AM
  */
-public class DemoClass {
+public class DemoClass extends DemoSuperClass {
 
     public static String publicStaticStr;
     public String publicStr;
