@@ -8,7 +8,12 @@ package cn.erhu.reflectx.democlass;
  * @since 02/11/2016 4:20 PM
  */
 public class DemoSuperClass {
-    public String superMethod() {
-        return "superMethod";
+
+    public String superPublicMethod() {
+        return "superPublicMethod";
+    }
+
+    private String superPrivateMethod() {
+        return "superPrivateMethod";
     }
 }

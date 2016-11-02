@@ -112,22 +112,15 @@ public class ReflectX {
     /*------ call ------*/
     /*------------------*/
     public ReflectX call(String name, Object... objs) {
-        Method method;
+        Method method = null;
+        Class<?> tmpClass = clazz;
         Class<?>[] pTypes = types(objs);
 
-        try {
-            method = clazz.getDeclaredMethod(name, pTypes);
-        } catch (NoSuchMethodException e) {
-            // check if change params type between primitive and nonPrimitive can get matched method.
-            method = findMethod(name, clazz.getDeclaredMethods(), pTypes);
-            // check method from super class/interface.
-            if (method == null) {
-                try {
-                    method = clazz.getMethod(name, pTypes);
-                } catch (NoSuchMethodException e1) {
-                    method = findMethod(name, clazz.getMethods(), pTypes);
-                }
-            }
+        // 沿着类的继承结构查找方法, 如果当前类没找到, 会从递归从父类从查找。
+        // (主要用于在父类中查找 protected 和 private 方法)
+        while (tmpClass != null && method == null) {
+            method = findMethod(tmpClass, name, pTypes);
+            tmpClass = tmpClass.getSuperclass();
         }
 
         if (method != null) {
@@ -140,12 +133,41 @@ public class ReflectX {
     }
 
     /**
-     * find method from methods
+     * 根据类名和方法参数列表来查找方法
+     *
+     * @param clazz      要查找的类
+     * @param methodName 要查找的目标方法名称
+     * @param pTypes     目标方法参数列表
+     * @return 方法
      */
-    private Method findMethod(String mName, Method[] methods, Class<?>[] pTypes) {
+    private Method findMethod(Class<?> clazz, String methodName, Class<?>[] pTypes) {
+        Method method = null;
+        if (clazz != null) {
+            try {
+                method = clazz.getDeclaredMethod(methodName, pTypes);
+            } catch (NoSuchMethodException e) {
+                // 如果在 declaredMethods 中未找到方法, 将参数中的数字类型放宽要求进行匹配(视包装数字类型和原始数字类型等价)
+                method = findMethod(clazz.getDeclaredMethods(), methodName, pTypes);
+                // 尝试获取 class 所有的 public 方法(包含父类和接口的 public 方法)
+                if (method == null) {
+                    try {
+                        method = clazz.getMethod(methodName, pTypes);
+                    } catch (NoSuchMethodException e1) {
+                        method = findMethod(clazz.getMethods(), methodName, pTypes);
+                    }
+                }
+            }
+        }
+        return method;
+    }
+
+    /**
+     * 从 methods 中匹配 method, 放宽数字类型要求
+     */
+    private Method findMethod(Method[] methods, String methodName, Class<?>[] pTypes) {
         if (methods != null) {
             for (Method m : methods) {
-                if (m.getName().equals(mName) && match(m.getParameterTypes(), pTypes)) {
+                if (m.getName().equals(methodName) && match(m.getParameterTypes(), pTypes)) {
                     return m;
                 }
             }
