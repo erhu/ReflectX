@@ -112,51 +112,45 @@ public class ReflectX {
     /*------ call ------*/
     /*------------------*/
     public ReflectX call(String name, Object... objs) {
-        Method method = null;
+        Method method;
         Class<?>[] pTypes = types(objs);
 
         try {
             method = clazz.getDeclaredMethod(name, pTypes);
         } catch (NoSuchMethodException e) {
-            boolean found = false;
-            Method[] methods = clazz.getDeclaredMethods();
-            for (Method m : methods) {
-                if (m.getName().equals(name)
-                        && match(m.getParameterTypes(), pTypes)) {
-                    method = m;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
+            // check if change params type between primitive and nonPrimitive can get matched method.
+            method = findMethod(name, clazz.getDeclaredMethods(), pTypes);
+            // check method from super class/interface.
+            if (method == null) {
                 try {
                     method = clazz.getMethod(name, pTypes);
                 } catch (NoSuchMethodException e1) {
-                    found = false;
-                    methods = clazz.getMethods();
-                    for (Method m : methods) {
-                        if (m.getName().equals(name)
-                                && match(m.getParameterTypes(), pTypes)) {
-                            method = m;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        e1.printStackTrace();
-                    }
+                    method = findMethod(name, clazz.getMethods(), pTypes);
                 }
             }
         }
 
         if (method != null) {
             method.setAccessible(true);
-
             return on(invoke(instance, method, objs));
         }
 
         throw new ReflectXException(
                 new NoSuchMethodException(String.format("%s(%s) not found", name, objs)));
+    }
+
+    /**
+     * find method from methods
+     */
+    private Method findMethod(String mName, Method[] methods, Class<?>[] pTypes) {
+        if (methods != null) {
+            for (Method m : methods) {
+                if (m.getName().equals(mName) && match(m.getParameterTypes(), pTypes)) {
+                    return m;
+                }
+            }
+        }
+        return null;
     }
 
     /*------------------*/
