@@ -100,7 +100,6 @@ public class ReflectX {
         }
 
         if (field != null) {
-            field.setAccessible(true);
 
             // 调用非静态属性时, instance 不能为空
             if ((field.getModifiers() & Modifier.STATIC) == 0) {
@@ -140,7 +139,34 @@ public class ReflectX {
                 }
             }
         }
+        if (field != null) {
+            field.setAccessible(true);
+        }
         return field;
+    }
+
+
+
+    /*------------------*/
+    /*---- set field ---*/
+    /*------------------*/
+    /**
+     * 给指定属性设置值
+     *
+     * @param fieldName 属性名称
+     * @param val       值
+     * @throws ReflectXException
+     */
+    public ReflectX set(String fieldName, Object val) throws ReflectXException {
+        Field field = findField(clazz, fieldName);
+        if (field != null) {
+            try {
+                field.set(instance, val);
+            } catch (IllegalAccessException e) {
+                throw new ReflectXException(e);
+            }
+        }
+        return this;
     }
 
     /*------------------*/

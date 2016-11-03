@@ -11,6 +11,7 @@ public class DemoSuperClass {
 
     public String superPublicStr = "superPublicStr";
     public String superPrivateField = "superPrivateField";
+    public String superPrivateStaticField = "superPrivateStaticField";
 
     public String superPublicMethod() {
         return "superPublicMethod";
