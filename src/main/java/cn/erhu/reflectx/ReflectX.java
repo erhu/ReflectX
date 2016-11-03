@@ -89,23 +89,58 @@ public class ReflectX {
     /*------ field -----*/
     /*------------------*/
     public ReflectX field(String name) throws ReflectXException {
-        try {
-            Field field = clazz.getDeclaredField(name);
+        Field field = null;
+        Class<?> tmpClass = clazz;
+
+        // 沿着类的继承结构查找 Field, 如果当前类没找到, 会从递归从父类从查找。
+        // (主要用于在父类中查找 protected 和 private field)
+        while (tmpClass != null && field == null) {
+            field = findField(tmpClass, name);
+            tmpClass = tmpClass.getSuperclass();
+        }
+
+        if (field != null) {
             field.setAccessible(true);
 
-            // not static field
+            // 调用非静态属性时, instance 不能为空
             if ((field.getModifiers() & Modifier.STATIC) == 0) {
                 if (instance == null) {
-                    throw new NullPointerException("create is null when call non-static field");
+                    throw new NullPointerException("Instance is null when call non-static field");
                 }
             }
 
-            return on(field.get(instance));
-        } catch (NoSuchFieldException e) {
-            throw new ReflectXException(e);
-        } catch (IllegalAccessException e) {
-            throw new ReflectXException(e);
+            try {
+                return on(field.get(instance));
+            } catch (Exception e) {
+                throw new ReflectXException(e);
+            }
+
+        } else {
+            throw new ReflectXException(new Exception(String.format("%s not found", name)));
         }
+    }
+
+    /**
+     * 根据类名和属性名称, 查找属性
+     *
+     * @param clazz     要查找的类
+     * @param fieldName 要查找的属性的名称
+     * @return 属性
+     */
+    private Field findField(Class<?> clazz, String fieldName) {
+        Field field = null;
+        if (clazz != null) {
+            try {
+                field = clazz.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                try {
+                    field = clazz.getField(fieldName);
+                } catch (NoSuchFieldException e1) {
+                    throw new ReflectXException(e1);
+                }
+            }
+        }
+        return field;
     }
 
     /*------------------*/
@@ -116,7 +151,7 @@ public class ReflectX {
         Class<?> tmpClass = clazz;
         Class<?>[] pTypes = types(objs);
 
-        // 沿着类的继承结构查找方法, 如果当前类没找到, 会从递归从父类从查找。
+        // 沿着类的继承结构查找 Method, 如果当前类没找到, 会从递归从父类从查找。
         // (主要用于在父类中查找 protected 和 private 方法)
         while (tmpClass != null && method == null) {
             method = findMethod(tmpClass, name, pTypes);
@@ -189,7 +224,7 @@ public class ReflectX {
         // not static call
         if ((method.getModifiers() & Modifier.STATIC) == 0) {
             if (instance == null) {
-                throw new NullPointerException("create is null when call non-static call");
+                throw new NullPointerException("Instance is null when call non-static method");
             }
         }
 

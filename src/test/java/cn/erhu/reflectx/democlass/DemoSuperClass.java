@@ -9,6 +9,9 @@ package cn.erhu.reflectx.democlass;
  */
 public class DemoSuperClass {
 
+    public String superPublicStr = "superPublicStr";
+    public String superPrivateField = "superPrivateField";
+
     public String superPublicMethod() {
         return "superPublicMethod";
     }
