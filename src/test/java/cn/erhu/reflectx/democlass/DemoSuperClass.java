@@ -20,4 +20,8 @@ public class DemoSuperClass {
     private String superPrivateMethod() {
         return "superPrivateMethod";
     }
+
+    private String superStaticPrivateMethod() {
+        return "superStaticPrivateMethod";
+    }
 }
