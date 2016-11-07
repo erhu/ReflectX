@@ -1,7 +1,8 @@
-package cn.erhu.reflectx;
+package cn.erhu.reflectx.test;
 
 import static org.junit.Assert.assertEquals;
 
+import cn.erhu.reflectx.ReflectX;
 import cn.erhu.reflectx.democlass.DemoClass;
 import org.junit.Test;
 

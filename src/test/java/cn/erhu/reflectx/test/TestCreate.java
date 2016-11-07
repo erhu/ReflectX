@@ -1,6 +1,6 @@
-package cn.erhu.reflectx;
+package cn.erhu.reflectx.test;
 
-import cn.erhu.reflectx.democlass.DemoClass;
+import cn.erhu.reflectx.ReflectX;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,19 +16,18 @@ public class TestCreate {
     @Test
     public void create1() {
         Object obj = ReflectX
-                .on(DemoClass.class)
+                .on(String.class)
                 .create()
                 .get();
-        Assert.assertEquals(obj.getClass(), DemoClass.class);
+        Assert.assertEquals(obj, "");
     }
 
     @Test
     public void create2() {
         Object obj = ReflectX
-                .on(DemoClass.class)
-                .create("hi")
-                .field("privateStr")
+                .on(String.class)
+                .create("4")
                 .get();
-        Assert.assertEquals(obj, "hi");
+        Assert.assertEquals(obj, "4");
     }
 }

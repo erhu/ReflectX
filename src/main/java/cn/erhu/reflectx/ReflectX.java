@@ -272,6 +272,10 @@ public class ReflectX {
     }
 
     private boolean match(Class<?>[] p1, Class<?>[] p2) {
+        if (p1.length != p2.length) {
+            return false;
+        }
+
         int i = 0;
         for (Class<?> c1 : p1) {
             if (!wrapper(c1).isAssignableFrom(wrapper(p2[i]))) {

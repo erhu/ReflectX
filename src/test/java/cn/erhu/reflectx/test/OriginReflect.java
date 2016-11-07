@@ -1,4 +1,4 @@
-package cn.erhu.reflectx;
+package cn.erhu.reflectx.test;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
