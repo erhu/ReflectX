@@ -34,12 +34,12 @@ public class TestGetField {
     }
 
     @Test
-    public void testGetPrivateStaticField() {
+    public void testGetPublicStaticField() {
         Object obj = ReflectX
-                .on(DemoClass.class)
-                .create()
-                .field("privateStaticStr").get();
-        assertEquals("privateStaticStr", obj);
+                .on(Integer.class)
+                .create("1")
+                .field("MIN_VALUE").get();
+        assertEquals(0x80000000, obj);
 
         // -----------
         /*

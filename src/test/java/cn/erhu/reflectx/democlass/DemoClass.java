@@ -9,7 +9,6 @@ package cn.erhu.reflectx.democlass;
  */
 public class DemoClass extends DemoSuperClass {
 
-    public static String publicStaticStr;
     public String publicStr;
 
     private String privateStr;
@@ -19,7 +18,6 @@ public class DemoClass extends DemoSuperClass {
         privateStr = "privateStr";
         privateStaticStr = "privateStaticStr";
         publicStr = "publicStr";
-        publicStaticStr = "publicStaticStr";
     }
 
     public DemoClass(String privateStr) {

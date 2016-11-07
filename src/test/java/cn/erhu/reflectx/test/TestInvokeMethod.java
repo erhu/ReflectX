@@ -2,6 +2,9 @@ package cn.erhu.reflectx.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
+import java.util.List;
+
 import cn.erhu.reflectx.ReflectX;
 import cn.erhu.reflectx.democlass.DemoClass;
 import org.junit.Test;
@@ -16,38 +19,38 @@ import org.junit.Test;
 public class TestInvokeMethod {
 
     /**
-     * 测试方法调用
+     * 方法调用
      */
     @Test
     public void testInvokeMethod() {
         Object obj = ReflectX
-                .on(DemoClass.class)
-                .create()
-                .call("publicMethod", 1).get();
-        assertEquals("public 1", obj);
+                .on(String.class)
+                .create("Hello")
+                .call("charAt", 1).get();
+        assertEquals('e', obj);
     }
 
     /**
-     * 测试私用方法调用
+     * 私用方法调用
      */
     @Test
     public void testInvokePrivateMethod() {
         Object obj = ReflectX
-                .on(DemoClass.class)
+                .on(ReflectX.class)
                 .create()
-                .call("privateMethod", 1).get();
-        assertEquals("private 1", obj);
+                .call("wrapper", int.class).get();
+        assertEquals(obj, Integer.class);
     }
 
     /**
-     * 测试静态方法调用
+     * 静态方法调用
      */
     @Test
     public void testInvokeStaticMethod() {
-        Object obj = ReflectX
-                .on(DemoClass.class)
-                .call("publicStaticMethod", 1).get();
-        assertEquals("public static 1", obj);
+        List obj = (List) (ReflectX
+                .on(Collections.class)
+                .call("emptyList").get());
+        assertEquals(obj.size(), 0);
     }
 
     /**

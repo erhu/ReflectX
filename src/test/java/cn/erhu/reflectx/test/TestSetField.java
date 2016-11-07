@@ -20,11 +20,10 @@ public class TestSetField {
      */
     @Test
     public void testSetPrivateField() {
-        Object obj = ReflectX
-                .on(String.class)
+        Object obj = ReflectX.on(String.class)
                 .create("Hi")
-                .set("value", new char[]{'H', 'e', 'l', 'l', 'o'}).get();
-
+                .set("value", new char[]{'H', 'e', 'l', 'l', 'o'})
+                .get();
         assertEquals(obj, "Hello");
     }
 
@@ -33,11 +32,10 @@ public class TestSetField {
      */
     @Test
     public void testSetPrivateStaticField() {
-        DemoClass obj = (DemoClass) ReflectX
-                .on(DemoClass.class)
+        DemoClass obj = (DemoClass) ReflectX.on(DemoClass.class)
                 .create()
-                .set("privateStaticStr", "privateStaticStrNew").get();
-
+                .set("privateStaticStr", "privateStaticStrNew")
+                .get();
         assertEquals(ReflectX.on(obj).field("privateStaticStr").get(), "privateStaticStrNew");
     }
 
@@ -50,7 +48,6 @@ public class TestSetField {
                 .on(DemoClass.class)
                 .create()
                 .set("superPrivateField", "superPrivateFieldNew").get();
-
         assertEquals(ReflectX.on(obj).field("superPrivateField").get(), "superPrivateFieldNew");
     }
 
@@ -63,8 +60,6 @@ public class TestSetField {
                 .on(DemoClass.class)
                 .create()
                 .set("superPrivateStaticField", "superPrivateStaticFieldNew").get();
-
         assertEquals(ReflectX.on(obj).field("superPrivateStaticField").get(), "superPrivateStaticFieldNew");
     }
-
 }
