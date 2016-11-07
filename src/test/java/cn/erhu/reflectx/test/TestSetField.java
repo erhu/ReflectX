@@ -16,20 +16,20 @@ import org.junit.Test;
 public class TestSetField {
 
     /**
-     * 测试 设置对象的私有属性
+     * 修改私有属性
      */
     @Test
     public void testSetPrivateField() {
-        DemoClass obj = (DemoClass) ReflectX
-                .on(DemoClass.class)
-                .create()
-                .set("privateStr", "privateStrNew").get();
+        Object obj = ReflectX
+                .on(String.class)
+                .create("Hi")
+                .set("value", new char[]{'H', 'e', 'l', 'l', 'o'}).get();
 
-        assertEquals(ReflectX.on(obj).field("privateStr").get(), "privateStrNew");
+        assertEquals(obj, "Hello");
     }
 
     /**
-     * 测试 设置对象的私有静态属性
+     * 设置对象的私有静态属性
      */
     @Test
     public void testSetPrivateStaticField() {
