@@ -18,6 +18,7 @@ public class TestGetField {
     public void testGetPublicField() {
         Object obj = ReflectX
                 .on(DemoClass.class)
+                .create()
                 .field("publicStr").get();
         assertEquals(obj, "publicStr");
     }

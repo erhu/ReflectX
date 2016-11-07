@@ -15,7 +15,7 @@ public class TestCreate {
 
     @Test
     public void create1() {
-        Object obj = new ReflectX()
+        Object obj = ReflectX
                 .on(DemoClass.class)
                 .create()
                 .get();
@@ -24,7 +24,7 @@ public class TestCreate {
 
     @Test
     public void create2() {
-        Object obj = new ReflectX()
+        Object obj = ReflectX
                 .on(DemoClass.class)
                 .create("hi")
                 .field("privateStr")
