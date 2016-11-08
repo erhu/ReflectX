@@ -1,7 +1,10 @@
 package cn.erhu.reflectx;
 
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -70,20 +73,52 @@ public class ReflectX {
     }
 
     public ReflectX create(Object... p) {
+        Class<?>[] pTypes = types(p);
+
         try {
-            instance = clazz.getConstructor(types(p)).newInstance(p);
+            return on(clazz.getDeclaredConstructor(pTypes), p);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            // 获取所有的构造方法
+            Constructor[] constructors = clazz.getConstructors();
+            for (Constructor c : constructors) {
+                if (match(c.getParameterTypes(), pTypes)) {
+                    return on(c, p);
+                }
+            }
+            throw new ReflectXException(e);
         }
-        return this;
     }
 
+    private static ReflectX on(Constructor<?> constructor, Object... args) throws ReflectXException {
+        try {
+            return on(accessible(constructor).newInstance(args));
+        } catch (Exception e) {
+            throw new ReflectXException(e);
+        }
+    }
+
+    public static <T extends AccessibleObject> T accessible(T accessible) {
+        if (accessible == null) {
+            return null;
+        }
+
+        if (accessible instanceof Member) {
+            Member member = (Member) accessible;
+
+            if (Modifier.isPublic(member.getModifiers()) &&
+                    Modifier.isPublic(member.getDeclaringClass().getModifiers())) {
+
+                return accessible;
+            }
+        }
+
+        // The accessible flag is set to false by default, also for public members.
+        if (!accessible.isAccessible()) {
+            accessible.setAccessible(true);
+        }
+
+        return accessible;
+    }
 
     /*------------------*/
     /*------ field -----*/

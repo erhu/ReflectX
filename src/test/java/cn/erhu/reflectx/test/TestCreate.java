@@ -30,4 +30,13 @@ public class TestCreate {
                 .get();
         Assert.assertEquals(obj, "4");
     }
+
+    @Test
+    public void create3() {
+        Object obj = ReflectX
+                .on(Integer.class)
+                .create(4)
+                .get();
+        Assert.assertEquals(obj, 4);
+    }
 }
